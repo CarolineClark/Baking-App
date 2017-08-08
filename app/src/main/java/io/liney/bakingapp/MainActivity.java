@@ -1,5 +1,6 @@
 package io.liney.bakingapp;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -58,6 +59,8 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
 
     @Override
     public void onClick(RecipePojo recipeData) {
-        Toast.makeText(this, recipeData.getName(), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, RecipeDetailActivity.class);
+        intent.putExtra("recipe", recipeData);
+        startActivity(intent);
     }
 }
