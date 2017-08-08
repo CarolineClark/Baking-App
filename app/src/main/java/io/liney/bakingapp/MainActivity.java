@@ -3,13 +3,10 @@ package io.liney.bakingapp;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
-
 import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
@@ -28,8 +25,9 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
         mAdapter = new RecipeAdapter(this, this);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, GridLayoutManager.VERTICAL, false);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRecipeRecyclerView.setLayoutManager(layoutManager);
         mRecipeRecyclerView.setAdapter(mAdapter);
 
@@ -59,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
     }
 
     @Override
-    public void onClick() {
-        Toast.makeText(this, "Recicpe clicked", Toast.LENGTH_SHORT).show();
+    public void onClick(RecipePojo recipeData) {
+        Toast.makeText(this, recipeData.getName(), Toast.LENGTH_SHORT).show();
     }
 }

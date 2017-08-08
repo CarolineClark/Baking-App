@@ -5,12 +5,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.TextView;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeAdapterViewHolder> {
     private RecipeClickHandler mClickHandler;
@@ -37,7 +38,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeAdap
 
     @Override
     public void onBindViewHolder(RecipeAdapterViewHolder holder, int position) {
-        holder.mRecipeButton.setText(mRecipeData.get(position).getName());
+        holder.mRecipeTextView.setText(mRecipeData.get(position).getName());
     }
 
     @Override
@@ -49,20 +50,21 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeAdap
     }
 
     class RecipeAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        @BindView(R.id.recipe_name) Button mRecipeButton;
+        @BindView(R.id.recipe_name) TextView mRecipeTextView;
 
-        public RecipeAdapterViewHolder(View itemView) {
+        RecipeAdapterViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View view) {
-            mClickHandler.onClick();
+            mClickHandler.onClick(mRecipeData.get(getAdapterPosition()));
         }
     }
 
     interface RecipeClickHandler {
-        void onClick();
+        void onClick(RecipePojo recipe);
     }
 }
