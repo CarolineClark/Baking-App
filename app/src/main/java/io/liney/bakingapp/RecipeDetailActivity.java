@@ -1,5 +1,6 @@
 package io.liney.bakingapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -58,6 +59,8 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepAdapt
 
     @Override
     public void onClick(StepPojo step) {
-        Toast.makeText(this, "Step clicked: " + step.getShortDescription(), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, StepDetailActivity.class);
+        intent.putExtra("step", step);
+        startActivity(intent);
     }
 }
