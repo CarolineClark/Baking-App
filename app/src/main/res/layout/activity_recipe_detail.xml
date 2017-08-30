@@ -1,41 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<android.support.v7.widget.RecyclerView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/steps_recycler_view"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-     android:layout_width="match_parent">
-
-    <LinearLayout
-        android:orientation="vertical" android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/recipe_name_text_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-        <TextView
-            android:id="@+id/servings_text_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <LinearLayout
-            android:id="@+id/ingredients_linear_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-        </LinearLayout>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/steps_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorAccent">
-        </android.support.v7.widget.RecyclerView>
-
-        <!--<LinearLayout-->
-            <!--android:id="@+id/steps_linear_layout"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:orientation="vertical">-->
-        <!--</LinearLayout>-->
-
-    </LinearLayout>
-</ScrollView>
+    android:background="@color/colorAccent">
+</android.support.v7.widget.RecyclerView>

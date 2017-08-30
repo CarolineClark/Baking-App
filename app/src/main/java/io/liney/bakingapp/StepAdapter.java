@@ -13,11 +13,16 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder> {
+public class StepAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final IStepClickHandler mClickHandler;
     private final Context mContext;
     private List<StepPojo> mStepsData;
+    private List<IngredientPojo> mIngredientsData;
+    private final int INGREDIENTS = 0;
+    private final int STEPS = 1;
+    private String mServings;
+    private String mRecipeName;
 
     StepAdapter(Context context, IStepClickHandler clickHandler) {
         mContext = context;
@@ -30,16 +35,48 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
     }
 
     @Override
-    public StepViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        View view = inflater.inflate(R.layout.step_adapter, parent, false);
-        return new StepViewHolder(view);
+        RecyclerView.ViewHolder holder;
+        View view;
+        switch (viewType) {
+            case INGREDIENTS:
+                view = inflater.inflate(R.layout.ingrediant_adapter, parent, false);
+                holder = new IngredientViewHolder(view);
+                break;
+            case STEPS:
+                view = inflater.inflate(R.layout.step_adapter, parent, false);
+                holder = new StepViewHolder(view);
+                break;
+            default:
+                view = inflater.inflate(R.layout.step_adapter, parent, false);
+                holder = new StepViewHolder(view);
+                break;
+        }
+        return holder;
     }
 
     @Override
-    public void onBindViewHolder(StepViewHolder holder, int position) {
-        String shortDescription = mStepsData.get(position).getShortDescription();
-        holder.mShortDescriptionTextView.setText(shortDescription);
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        switch(getItemViewType(position)) {
+            case INGREDIENTS:
+                fillIngredients(mIngredientsData, (IngredientViewHolder)holder);
+                break;
+            case STEPS:
+                String shortDescription = mStepsData.get(position).getShortDescription();
+                ((StepViewHolder) holder).mShortDescriptionTextView.setText(shortDescription);
+                break;
+        }
+    }
+
+    private void fillIngredients(List<IngredientPojo> ingredients, IngredientViewHolder holder) {
+        String text = "";
+        for (IngredientPojo ingredient: ingredients) {
+            text += ingredient.getIngredient() + ", " + Double.toString(ingredient.getQuantity()) + ", " + ingredient.getMeasure() + "\n";
+        }
+        holder.mIngredientTextView.setText(text);
+        holder.mNameTextView.setText(mRecipeName);
+        holder.mServingsTextView.setText(mServings);
     }
 
     @Override
@@ -48,6 +85,27 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
             return 0;
         }
         return mStepsData.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (position == 0) {
+            return INGREDIENTS;
+        } else {
+            return STEPS;
+        }
+    }
+
+    void setIngredientsData(List<IngredientPojo> ingredientsData) {
+        this.mIngredientsData = ingredientsData;
+    }
+
+    public void setServings(String mServings) {
+        this.mServings = mServings;
+    }
+
+    public void setRecipeName(String mRecipeName) {
+        this.mRecipeName = mRecipeName;
     }
 
     class StepViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -61,7 +119,18 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
 
         @Override
         public void onClick(View view) {
-            mClickHandler.onClick(mStepsData.get(getAdapterPosition()));
+            mClickHandler.onClick(mStepsData.get(getAdapterPosition() - 1));
+        }
+    }
+
+    class IngredientViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.ingredients_text_view) TextView mIngredientTextView;
+        @BindView(R.id.servings_text_view) TextView mServingsTextView;
+        @BindView(R.id.recipe_name_text_view) TextView mNameTextView;
+
+        IngredientViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
         }
     }
 
