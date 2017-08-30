@@ -41,10 +41,10 @@ public class StepDetailActivity extends AppCompatActivity {
             return;
         }
         String videoURL = steps.getVideoURL();
-        if (videoURL != null) {
+        if (videoURL != null && !videoURL.equals("")) {
             initializePlayer(Uri.parse(videoURL));
-            Toast.makeText(this, videoURL, Toast.LENGTH_SHORT).show();
         }
+        descriptionTextView.setText(steps.getDescription());
     }
 
     /**
