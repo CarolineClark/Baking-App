@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.v7.widget.RecyclerView
+<fragment
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/steps_recycler_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-</android.support.v7.widget.RecyclerView>
+    android:layout_height="match_parent"
+    android:name="io.liney.bakingapp.RecipeDetailFragment"
+    android:id="@+id/master_list_fragment">
+</fragment>

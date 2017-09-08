@@ -2,45 +2,29 @@ package io.liney.bakingapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 
-import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
-public class RecipeDetailActivity extends AppCompatActivity implements StepAdapter.IStepClickHandler {
-
-    @BindView(R.id.steps_recycler_view) RecyclerView mStepsRecyclerView;
-    private StepAdapter mAdapter;
+class RecipeDetailActivity extends AppCompatActivity implements StepAdapter.IStepClickHandler {
+    private boolean mTwoPane;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_detail);
-        ButterKnife.bind(this);
+        mTwoPane = findViewById(R.id.master_detail_view) != null;
 
-        mAdapter = new StepAdapter(this, this);
-        RecipePojo recipeData = getIntent().getExtras().getParcelable("recipe");
-        mAdapter.setServings(Integer.toString(recipeData.getServings()));
-        mAdapter.setRecipeName(recipeData.getName());
-
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        mStepsRecyclerView.setLayoutManager(layoutManager);
-        mStepsRecyclerView.setAdapter(mAdapter);
-        List<StepPojo> steps = recipeData.getSteps();
-        mAdapter.setStepsData(steps);
-        mAdapter.setIngredientsData(recipeData.getIngredients());
+        // TODO get recipe details, and send it to the fragments.
     }
 
     @Override
     public void onClick(StepPojo step) {
-        Intent intent = new Intent(this, StepDetailActivity.class);
-        intent.putExtra("step", step);
-        startActivity(intent);
+        if (mTwoPane) {
+            // update other section
+        } else {
+            // launch intent
+            Intent intent = new Intent(this, StepDetailActivity.class);
+            intent.putExtra("step", step);
+            startActivity(intent);
+        }
     }
 }
