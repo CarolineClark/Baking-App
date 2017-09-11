@@ -19,6 +19,7 @@ import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
@@ -61,6 +62,12 @@ public class StepDetailFragment extends Fragment {
         descriptionTextView.setText(mSteps.getDescription());
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        releasePlayer();
+    }
+
     /**
      * Initialize ExoPlayer.
      * @param mediaUri The URI of the sample to play.
@@ -72,15 +79,26 @@ public class StepDetailFragment extends Fragment {
             LoadControl loadControl = new DefaultLoadControl();
             mExoPlayer = ExoPlayerFactory.newSimpleInstance(getActivity(), trackSelector, loadControl);
             mPlayerView.setPlayer(mExoPlayer);
+            mPlayerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH);
 
             String userAgent = Util.getUserAgent(getContext(), "BakingApp");
             MediaSource mediaSource = new ExtractorMediaSource(
                     mediaUri,
                     new DefaultDataSourceFactory(getContext(), userAgent),
-                    new DefaultExtractorsFactory(), null, null
+                    new DefaultExtractorsFactory(),
+                    null,
+                    null
             );
             mExoPlayer.prepare(mediaSource);
             mExoPlayer.setPlayWhenReady(true);
+        }
+    }
+
+    private void releasePlayer() {
+        if (mExoPlayer != null) {
+            mExoPlayer.stop();
+            mExoPlayer.release();
+            mExoPlayer = null;
         }
     }
 }
