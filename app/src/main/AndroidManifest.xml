@@ -21,6 +21,12 @@
         <activity android:name=".RecipeDetailActivity" />
         <activity android:name=".StepDetailActivity" />
 
+        <activity android:name=".IngredientAppWidgetConfigure">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
+            </intent-filter>
+        </activity>
+
         <receiver android:name=".RecipeAppWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
