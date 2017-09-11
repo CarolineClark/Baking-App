@@ -42,9 +42,9 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
         recipes.enqueue(new Callback<List<RecipePojo>>() {
             @Override
             public void onResponse(@NonNull Call<List<RecipePojo>> call, @NonNull Response<List<RecipePojo>> response) {
-                List<RecipePojo> recipes =  response.body();
+                List<RecipePojo> recipes = response.body();
                 if (recipes == null) {
-                    Toast.makeText(MainActivity.this, "Recipe list is empty. Do you have internet connection?", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Recipe list is empty. Do you have internet connection?", Toast.LENGTH_LONG).show();
                     return;
                 }
                 mAdapter.setRecipes(recipes);
@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
 
             @Override
             public void onFailure(@NonNull Call<List<RecipePojo>> call, @NonNull Throwable t) {
-                Toast.makeText(MainActivity.this, "Failed to fetch recipes. Do you have internet connection?", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Failed to fetch recipes. Do you have internet connection?", Toast.LENGTH_LONG).show();
             }
         });
     }

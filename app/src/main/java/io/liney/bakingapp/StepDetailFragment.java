@@ -3,7 +3,10 @@ package io.liney.bakingapp;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,28 +26,39 @@ import com.google.android.exoplayer2.util.Util;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class StepDetailActivity extends AppCompatActivity {
+public class StepDetailFragment extends Fragment {
 
-    @BindView(R.id.description_text_view) TextView descriptionTextView;
-    @BindView(R.id.player_view) SimpleExoPlayerView mPlayerView;
     private SimpleExoPlayer mExoPlayer;
 
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_step_detail);
-        ButterKnife.bind(this);
-        StepPojo steps = getIntent().getExtras().getParcelable("step");
+    @BindView(R.id.player_view)
+    SimpleExoPlayerView mPlayerView;
 
-        if (steps == null) {
-            Toast.makeText(this, "Something went wrong while loading the activity!", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        String videoURL = steps.getVideoURL();
+    @BindView(R.id.description_text_view)
+    TextView descriptionTextView;
+
+    StepPojo mSteps;
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        final View rootView = inflater.inflate(R.layout.fragment_step_detail, container, false);
+        ButterKnife.bind(this, rootView);
+        return rootView;
+    }
+
+    public void setSteps(StepPojo steps) {
+        mSteps = steps;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        String videoURL = mSteps.getVideoURL();
         if (videoURL != null && !videoURL.equals("")) {
             initializePlayer(Uri.parse(videoURL));
+            Toast.makeText(getActivity(), "inititalising player", Toast.LENGTH_LONG).show();
         }
-        descriptionTextView.setText(steps.getDescription());
+        descriptionTextView.setText(mSteps.getDescription());
     }
 
     /**
@@ -56,29 +70,17 @@ public class StepDetailActivity extends AppCompatActivity {
             // Create an instance of the ExoPlayer.
             TrackSelector trackSelector = new DefaultTrackSelector();
             LoadControl loadControl = new DefaultLoadControl();
-            mExoPlayer = ExoPlayerFactory.newSimpleInstance(this, trackSelector, loadControl);
+            mExoPlayer = ExoPlayerFactory.newSimpleInstance(getActivity(), trackSelector, loadControl);
             mPlayerView.setPlayer(mExoPlayer);
 
-            // Set the ExoPlayer.EventListener to this activity.
-//            mExoPlayer.addListener(this);
-
-            // Prepare the MediaSource.
-            String userAgent = Util.getUserAgent(this, "BakingApp");
-            MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultDataSourceFactory(
-                    this, userAgent), new DefaultExtractorsFactory(), null, null);
+            String userAgent = Util.getUserAgent(getContext(), "BakingApp");
+            MediaSource mediaSource = new ExtractorMediaSource(
+                    mediaUri,
+                    new DefaultDataSourceFactory(getContext(), userAgent),
+                    new DefaultExtractorsFactory(), null, null
+            );
             mExoPlayer.prepare(mediaSource);
             mExoPlayer.setPlayWhenReady(true);
         }
-    }
-
-
-    /**
-     * Release ExoPlayer.
-     */
-    private void releasePlayer() {
-//        mNotificationManager.cancelAll();
-        mExoPlayer.stop();
-        mExoPlayer.release();
-        mExoPlayer = null;
     }
 }
