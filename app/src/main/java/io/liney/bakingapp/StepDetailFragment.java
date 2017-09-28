@@ -60,7 +60,6 @@ public class StepDetailFragment extends Fragment {
         String videoURL = mSteps.getVideoURL();
         if (videoURL != null && !videoURL.equals("")) {
             initializePlayer(Uri.parse(videoURL));
-            Toast.makeText(getActivity(), "inititalising player", Toast.LENGTH_LONG).show();
         } else {
             mPlayerView.setVisibility(View.GONE);
         }

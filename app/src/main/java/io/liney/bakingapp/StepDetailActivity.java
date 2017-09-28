@@ -15,6 +15,7 @@ public class StepDetailActivity extends AppCompatActivity {
 
     private RecipePojo mRecipe;
     private int mStepNumber;
+
     @BindView(R.id.previous_button) Button mPreviousButton;
     @BindView(R.id.next_button) Button mNextButton;
 
