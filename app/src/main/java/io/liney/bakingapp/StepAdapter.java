@@ -119,7 +119,7 @@ public class StepAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         @Override
         public void onClick(View view) {
-            mClickHandler.onClick(mStepsData.get(getAdapterPosition() - 1));
+            mClickHandler.onClick(getAdapterPosition() - 1);
         }
     }
 
@@ -135,6 +135,6 @@ public class StepAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     interface IStepClickHandler {
-        void onClick(StepPojo step);
+        void onClick(int step);
     }
 }

@@ -10,6 +10,7 @@ import android.util.Log;
 
 public class RecipeDetailActivity extends AppCompatActivity implements StepAdapter.IStepClickHandler {
     private boolean mTwoPane;
+    private RecipePojo mRecipe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,22 +18,22 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepAdapt
         setContentView(R.layout.activity_recipe_detail);
 
         mTwoPane = findViewById(R.id.master_detail_view) != null;
-        RecipePojo recipe = getIntent().getExtras().getParcelable("recipe");
+        mRecipe = getIntent().getExtras().getParcelable("recipe");
         if (mTwoPane) {
-            StepPojo step = recipe.getSteps().get(0);
+            StepPojo step = mRecipe.getSteps().get(0);
             createStepDetailFragment(step);
         }
         // the other fragment is static and does not need to implemented in code
-        Log.d("hello", "rar 123");
     }
 
     @Override
-    public void onClick(StepPojo step) {
+    public void onClick(int stepNumber) {
         if (mTwoPane) {
-            createStepDetailFragment(step);
+            createStepDetailFragment(mRecipe.getSteps().get(stepNumber));
         } else {
             Intent intent = new Intent(this, StepDetailActivity.class);
-            intent.putExtra("step", step);
+            intent.putExtra("recipe", mRecipe);
+            intent.putExtra("stepNumber", stepNumber);
             startActivity(intent);
         }
     }
