@@ -1,35 +1,48 @@
 package io.liney.bakingapp;
 
-import android.appwidget.AppWidgetManager;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+
 
 public class RecipeDetailActivity extends AppCompatActivity implements StepAdapter.IStepClickHandler {
+    private static final String KEY_RECIPE = "KEY_RECIPE";
+    private static final String FRAGMENT_KEY = "FRAGMENT_KEY";
+
     private boolean mTwoPane;
     private RecipePojo mRecipe;
+    private StepDetailFragment mStepDetailFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_detail);
-
         mTwoPane = findViewById(R.id.master_detail_view) != null;
-        mRecipe = getIntent().getExtras().getParcelable("recipe");
-        if (mTwoPane) {
-            StepPojo step = mRecipe.getSteps().get(0);
-            createStepDetailFragment(step);
+
+        if (savedInstanceState != null && mTwoPane) {
+            mRecipe = savedInstanceState.getParcelable(KEY_RECIPE);
+            mStepDetailFragment = (StepDetailFragment) getSupportFragmentManager().getFragment(savedInstanceState, FRAGMENT_KEY);
+            replaceStepFragment();
+
+        } else {
+            mRecipe = getIntent().getExtras().getParcelable("recipe");
+            if (mTwoPane) {
+                StepPojo step = mRecipe.getSteps().get(0);
+                createStepDetailFragmentWithData(step);
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                fragmentManager.beginTransaction()
+                        .add(R.id.step_detail_container, mStepDetailFragment)
+                        .commit();
+            }
         }
-        // the other fragment is static and does not need to implemented in code
     }
 
     @Override
     public void onClick(int stepNumber) {
         if (mTwoPane) {
-            createStepDetailFragment(mRecipe.getSteps().get(stepNumber));
+            createAndPlaceFragmentWithData(mRecipe.getSteps().get(stepNumber));
         } else {
             Intent intent = new Intent(this, StepDetailActivity.class);
             intent.putExtra("recipe", mRecipe);
@@ -38,21 +51,31 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepAdapt
         }
     }
 
-    private void createStepDetailFragment(StepPojo step) {
-        StepDetailFragment stepDetailFragment = new StepDetailFragment();
-        stepDetailFragment.setSteps(step);
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        if (mTwoPane) {
+            savedInstanceState.putParcelable(KEY_RECIPE, mRecipe);
+            getSupportFragmentManager().putFragment(savedInstanceState, FRAGMENT_KEY, mStepDetailFragment);
+        }
+
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    private void createAndPlaceFragmentWithData(StepPojo step) {
+        createStepDetailFragmentWithData(step);
+        replaceStepFragment();
+    }
+
+    private void replaceStepFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .add(R.id.step_detail_container, stepDetailFragment)
+                .replace(R.id.step_detail_container, mStepDetailFragment)
                 .commit();
     }
 
-    private void createMasterViewFragment(RecipePojo recipe) {
-//        RecipeDetailFragment recipeDetailFragment = new RecipeDetailFragment();
-//        recipeDetailFragment.setSteps(steps);
-//        FragmentManager fragmentManager = getSupportFragmentManager();
-//        fragmentManager.beginTransaction()
-//                .add(R.id.step_detail_container, recipeDetailFragment)
-//                .commit();
+    private void createStepDetailFragmentWithData(StepPojo step) {
+        mStepDetailFragment = new StepDetailFragment();
+        mStepDetailFragment.setSteps(step);
     }
+
 }

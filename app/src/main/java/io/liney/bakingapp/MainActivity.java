@@ -7,6 +7,7 @@ import android.support.annotation.VisibleForTesting;
 import android.support.test.espresso.IdlingResource;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -40,7 +41,15 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
         }
 
         mAdapter = new RecipeAdapter(this, this);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+
+        RecyclerView.LayoutManager layoutManager;
+        boolean isPhone = getResources().getBoolean(R.bool.is_phone);
+        if (isPhone) {
+            layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        } else {
+            layoutManager = new GridLayoutManager(this, 3, LinearLayoutManager.VERTICAL, false);
+        }
+
         mRecipeRecyclerView.setLayoutManager(layoutManager);
         mRecipeRecyclerView.setAdapter(mAdapter);
 
