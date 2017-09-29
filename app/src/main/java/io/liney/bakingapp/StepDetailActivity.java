@@ -45,7 +45,7 @@ public class StepDetailActivity extends AppCompatActivity {
             mStepDetailFragment = new StepDetailFragment();
             StepPojo step = mRecipe.getSteps().get(mStepNumber);
             if (step == null) {
-                Toast.makeText(this, "Something went wrong while loading the activity!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.problem_loading_activity), Toast.LENGTH_SHORT).show();
                 return;
             }
             mStepDetailFragment.setSteps(step);

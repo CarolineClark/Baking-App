@@ -20,8 +20,6 @@ public class RecipeAppWidgetProvider extends AppWidgetProvider {
         SharedPreferences prefs = context.getSharedPreferences("prefs", 0);
         String ingredients = prefs.getString("ingredients", "no ingredients to show!");
 
-        Log.d("RecipeAppWidgetProvider", "widgetText " + ingredients);
-
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.recipe_app_widget_provider);
         views.setTextViewText(R.id.appwidget_text, ingredients);

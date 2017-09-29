@@ -2,4 +2,8 @@
     <string name="app_name">BakingApp</string>
     <string name="appwidget_text">Ingredients</string>
     <string name="add_widget">Add widget</string>
+
+    <string name="empty_recipe_data">"Recipe list is empty. Do you have internet connection?"</string>
+    <string name="no_internet">Failed to fetch recipes. Do you have internet connection?</string>
+    <string name="problem_loading_activity">Something went wrong while loading the activity!</string>
 </resources>

@@ -70,8 +70,6 @@ public class StepDetailFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putParcelable(KEY_STEPS, mSteps);
-
-        // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -90,7 +88,6 @@ public class StepDetailFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-//        showInformation();
     }
 
     private void showInformation() {

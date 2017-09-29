@@ -32,7 +32,6 @@ public class IngredientAppWidgetConfigure extends AppCompatActivity {
     @BindView(R.id.submit_button) Button mSubmitButton;
     @BindView(R.id.radio_group_configuration_screen) RadioGroup mRadioGroup;
     private int mAppWidgetId;
-    private RecipePojo mRecipePojo;
     private String mListOfIngredients;
 
     @Override
@@ -70,7 +69,6 @@ public class IngredientAppWidgetConfigure extends AppCompatActivity {
     }
 
     private void fillRadioGroupWithRecipeButtons() {
-        Log.d("IngredientAppWidget", "recipe buttons");
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://d17h27t6h515a5.cloudfront.net/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -81,22 +79,18 @@ public class IngredientAppWidgetConfigure extends AppCompatActivity {
         recipes.enqueue(new Callback<List<RecipePojo>>() {
             @Override
             public void onResponse(@NonNull Call<List<RecipePojo>> call, @NonNull Response<List<RecipePojo>> response) {
-                Log.d("IngredientAppWidget", "making network request");
                 List<RecipePojo> recipes = response.body();
                 Context context = IngredientAppWidgetConfigure.this;
                 if (recipes == null) {
-                    Log.d("IngredientAppWidget", "recipes null");
-                    Toast.makeText(context, "Recipe list is empty. Do you have internet connection?", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, getString(R.string.empty_recipe_data), Toast.LENGTH_LONG).show();
                     return;
                 }
                 for (final RecipePojo recipePojo: recipes) {
-                    Log.d("IngredientAppWidget", "got back recipes");
                     RadioButton button = new RadioButton(context);
                     button.setText(recipePojo.getName());
                     button.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            mRecipePojo = recipePojo;
                             StringBuilder sb = new StringBuilder();
                             sb.append("\n");
                             for(IngredientPojo ingredient: recipePojo.getIngredients())
@@ -118,7 +112,7 @@ public class IngredientAppWidgetConfigure extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Call<List<RecipePojo>> call, @NonNull Throwable t) {
                 Log.d("IngredientAppWidget", "failed to make network request");
-                Toast.makeText(IngredientAppWidgetConfigure.this, "Failed to fetch recipes. Do you have internet connection?", Toast.LENGTH_LONG).show();
+                Toast.makeText(IngredientAppWidgetConfigure.this, getString(R.string.no_internet), Toast.LENGTH_LONG).show();
             }
         });
     }

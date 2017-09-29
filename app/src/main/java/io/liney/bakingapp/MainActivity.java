@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.widget.Toast;
 import java.util.List;
 import butterknife.BindView;
@@ -22,7 +21,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements RecipeAdapter.RecipeClickHandler {
-    private final String TAG = MainActivity.class.getSimpleName();
     @BindView(R.id.main_recipe_recycler_view) RecyclerView mRecipeRecyclerView;
     private RecipeAdapter mAdapter;
 
@@ -36,7 +34,6 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
         ButterKnife.bind(this);
 
         if (getIntent().getBooleanExtra("test", false)) {
-            // in a test, instantiate the idling resource
             mIdlingResource = new SimpleIdlingResource();
         }
 
@@ -52,8 +49,6 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
 
         mRecipeRecyclerView.setLayoutManager(layoutManager);
         mRecipeRecyclerView.setAdapter(mAdapter);
-
-        Log.d(TAG, "Idling resource called! " + mIdlingResource);
         setIdleState(false);
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -68,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
             public void onResponse(@NonNull Call<List<RecipePojo>> call, @NonNull Response<List<RecipePojo>> response) {
                 List<RecipePojo> recipes = response.body();
                 if (recipes == null) {
-                    Toast.makeText(MainActivity.this, "Recipe list is empty. Do you have internet connection?", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, getString(R.string.empty_recipe_data), Toast.LENGTH_LONG).show();
                     return;
                 }
                 mAdapter.setRecipes(recipes);
@@ -77,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
 
             @Override
             public void onFailure(@NonNull Call<List<RecipePojo>> call, @NonNull Throwable t) {
-                Toast.makeText(MainActivity.this, "Failed to fetch recipes. Do you have internet connection?", Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, getString(R.string.no_internet), Toast.LENGTH_LONG).show();
                 setIdleState(true);
             }
         });
