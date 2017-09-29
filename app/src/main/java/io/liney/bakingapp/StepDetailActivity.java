@@ -15,32 +15,57 @@ public class StepDetailActivity extends AppCompatActivity {
 
     private RecipePojo mRecipe;
     private int mStepNumber;
+    private final String KEY_RECIPE = "key_recipe";
+    private final String KEY_STEP_NUMBER = "key_step_number";
 
     @BindView(R.id.previous_button) Button mPreviousButton;
     @BindView(R.id.next_button) Button mNextButton;
+    private StepDetailFragment mStepDetailFragment;
+    private String FRAGMENT_KEY = "STEP_FRAGMENT";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_step_detail);
         ButterKnife.bind(this);
-        mRecipe = getIntent().getExtras().getParcelable("recipe");
-        mStepNumber = getIntent().getExtras().getInt("stepNumber");
-        StepPojo step = mRecipe.getSteps().get(mStepNumber);
 
-        if (step == null) {
-            Toast.makeText(this, "Something went wrong while loading the activity!", Toast.LENGTH_SHORT).show();
-            return;
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(KEY_RECIPE)) {
+                mRecipe = savedInstanceState.getParcelable(KEY_RECIPE);
+            }
+            if (savedInstanceState.containsKey(KEY_STEP_NUMBER)) {
+                mStepNumber = savedInstanceState.getInt(KEY_STEP_NUMBER);
+            }
+            if (savedInstanceState.containsKey(FRAGMENT_KEY)) {
+                mStepDetailFragment = (StepDetailFragment) getSupportFragmentManager().getFragment(savedInstanceState, FRAGMENT_KEY);
+            }
+        } else {
+            mRecipe = getIntent().getExtras().getParcelable("recipe");
+            mStepNumber = getIntent().getExtras().getInt("stepNumber");
+            mStepDetailFragment = new StepDetailFragment();
+            StepPojo step = mRecipe.getSteps().get(mStepNumber);
+            if (step == null) {
+                Toast.makeText(this, "Something went wrong while loading the activity!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            mStepDetailFragment.setSteps(step);
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .add(R.id.step_detail_fragment_wrapper, mStepDetailFragment)
+                    .commit();
         }
 
         enableDisableButtons();
+    }
 
-        StepDetailFragment stepDetailFragment = new StepDetailFragment();
-        stepDetailFragment.setSteps(step);
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .add(R.id.step_detail_fragment_wrapper, stepDetailFragment)
-                .commit();
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putParcelable(KEY_RECIPE, mRecipe);
+        savedInstanceState.putInt(KEY_STEP_NUMBER, mStepNumber);
+        getSupportFragmentManager().putFragment(savedInstanceState, FRAGMENT_KEY, mStepDetailFragment);
+
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState);
     }
 
     public void nextStep(View view) {
@@ -58,11 +83,11 @@ public class StepDetailActivity extends AppCompatActivity {
     }
 
     private void launchStep(int stepNumber) {
-        StepDetailFragment stepDetailFragment = new StepDetailFragment();
-        stepDetailFragment.setSteps(mRecipe.getSteps().get(stepNumber));
+        mStepDetailFragment = new StepDetailFragment();
+        mStepDetailFragment.setSteps(mRecipe.getSteps().get(stepNumber));
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .add(R.id.step_detail_fragment_wrapper, stepDetailFragment)
+                .replace(R.id.step_detail_fragment_wrapper, mStepDetailFragment)
                 .commit();
         enableDisableButtons();
     }

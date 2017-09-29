@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -38,6 +37,8 @@ public class StepDetailFragment extends Fragment {
     TextView descriptionTextView;
 
     StepPojo mSteps;
+    private String mVideoURL;
+    private final String KEY_STEPS = "key-steps";
 
     @Nullable
     @Override
@@ -57,14 +58,21 @@ public class StepDetailFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        String videoURL = mSteps.getVideoURL();
-        if (videoURL != null && !videoURL.equals("")) {
-            initializePlayer(Uri.parse(videoURL));
-        } else {
-            mPlayerView.setVisibility(View.GONE);
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(KEY_STEPS)) {
+                mSteps = savedInstanceState.getParcelable(KEY_STEPS);
+            }
         }
-        descriptionTextView.setText(mSteps.getDescription());
-        descriptionTextView.setVisibility(View.VISIBLE);
+        mVideoURL = mSteps.getVideoURL();
+        showInformation();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putParcelable(KEY_STEPS, mSteps);
+
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState);
     }
 
     @Override
@@ -73,13 +81,34 @@ public class StepDetailFragment extends Fragment {
         releasePlayer();
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        releasePlayer();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+//        showInformation();
+    }
+
+    private void showInformation() {
+        if (mVideoURL != null && !mVideoURL.equals("")) {
+            initializePlayer(Uri.parse(mVideoURL));
+        } else {
+            mPlayerView.setVisibility(View.GONE);
+        }
+        descriptionTextView.setText(mSteps.getDescription());
+        descriptionTextView.setVisibility(View.VISIBLE);
+    }
+
     /**
      * Initialize ExoPlayer.
      * @param mediaUri The URI of the sample to play.
      */
     private void initializePlayer(Uri mediaUri) {
         if (mExoPlayer == null) {
-            // Create an instance of the ExoPlayer.
             TrackSelector trackSelector = new DefaultTrackSelector();
             LoadControl loadControl = new DefaultLoadControl();
             mExoPlayer = ExoPlayerFactory.newSimpleInstance(getActivity(), trackSelector, loadControl);
