@@ -18,6 +18,8 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepAdapt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_detail);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         mTwoPane = findViewById(R.id.master_detail_view) != null;
 
         if (savedInstanceState != null && mTwoPane) {
