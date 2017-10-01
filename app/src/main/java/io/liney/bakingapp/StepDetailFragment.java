@@ -104,17 +104,24 @@ public class StepDetailFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        if (mExoPlayer == null) {
+            initVideoPlayer(0);
+        }
     }
 
     private void showInformation(long currentPosition) {
+        initVideoPlayer(currentPosition);
+        displayThumbnailImage(mSteps.getThumbnailURL());
+        descriptionTextView.setText(mSteps.getDescription());
+        descriptionTextView.setVisibility(View.VISIBLE);
+    }
+
+    private void initVideoPlayer(long currentPosition) {
         if (mVideoURL != null && !mVideoURL.equals("")) {
             initializePlayer(Uri.parse(mVideoURL), currentPosition);
         } else {
             mPlayerView.setVisibility(View.GONE);
         }
-        displayThumbnailImage(mSteps.getThumbnailURL());
-        descriptionTextView.setText(mSteps.getDescription());
-        descriptionTextView.setVisibility(View.VISIBLE);
     }
 
     private void displayThumbnailImage(String thumbnailURL) {
