@@ -1,6 +1,7 @@
 package io.liney.bakingapp;
 
 import android.content.Intent;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
@@ -21,14 +22,16 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements RecipeAdapter.RecipeClickHandler {
+    private static final String RECYCLER_VIEW_POSITION = "RECYCLER_VIEW_POSITION";
     @BindView(R.id.main_recipe_recycler_view) RecyclerView mRecipeRecyclerView;
     private RecipeAdapter mAdapter;
 
     @Nullable
     private SimpleIdlingResource mIdlingResource;
+    private RecyclerView.LayoutManager mLayoutManager;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
@@ -39,16 +42,16 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
 
         mAdapter = new RecipeAdapter(this, this);
 
-        RecyclerView.LayoutManager layoutManager;
         boolean isPhone = getResources().getBoolean(R.bool.is_phone);
         if (isPhone) {
-            layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+            mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         } else {
-            layoutManager = new GridLayoutManager(this, 3, LinearLayoutManager.VERTICAL, false);
+            mLayoutManager = new GridLayoutManager(this, 3, LinearLayoutManager.VERTICAL, false);
         }
 
-        mRecipeRecyclerView.setLayoutManager(layoutManager);
+        mRecipeRecyclerView.setLayoutManager(mLayoutManager);
         mRecipeRecyclerView.setAdapter(mAdapter);
+
         setIdleState(false);
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -68,6 +71,11 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
                 }
                 mAdapter.setRecipes(recipes);
                 setIdleState(true);
+
+                if (savedInstanceState != null && savedInstanceState.containsKey(RECYCLER_VIEW_POSITION)) {
+                    int position = savedInstanceState.getInt(RECYCLER_VIEW_POSITION);
+                    mLayoutManager.scrollToPosition(position);
+                }
             }
 
             @Override
@@ -98,5 +106,14 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
             mIdlingResource = new SimpleIdlingResource();
         }
         return mIdlingResource;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mLayoutManager instanceof LinearLayoutManager) {
+            int firstVisibleItemPosition = ((LinearLayoutManager) mLayoutManager).findFirstVisibleItemPosition();
+            outState.putInt(RECYCLER_VIEW_POSITION, firstVisibleItemPosition);
+        }
     }
 }
