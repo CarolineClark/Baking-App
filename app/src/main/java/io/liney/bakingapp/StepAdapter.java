@@ -63,7 +63,7 @@ public class StepAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 fillIngredients(mIngredientsData, (IngredientViewHolder)holder);
                 break;
             case STEPS:
-                String shortDescription = mStepsData.get(position).getShortDescription();
+                String shortDescription = mStepsData.get(position - 1).getShortDescription();
                 ((StepViewHolder) holder).mShortDescriptionTextView.setText(shortDescription);
                 break;
         }
@@ -84,7 +84,7 @@ public class StepAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (mStepsData == null) {
             return 0;
         }
-        return mStepsData.size();
+        return mStepsData.size() + 1;
     }
 
     @Override

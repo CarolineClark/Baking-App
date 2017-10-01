@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -22,6 +23,7 @@ import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,6 +37,9 @@ public class StepDetailFragment extends Fragment {
 
     @BindView(R.id.description_text_view)
     TextView descriptionTextView;
+
+    @BindView(R.id.thumbnail_image_view)
+    ImageView mThumbnailImageView;
 
     StepPojo mSteps;
     private String mVideoURL;
@@ -96,8 +101,20 @@ public class StepDetailFragment extends Fragment {
         } else {
             mPlayerView.setVisibility(View.GONE);
         }
+        displayThumbnailImage(mSteps.getThumbnailURL());
         descriptionTextView.setText(mSteps.getDescription());
         descriptionTextView.setVisibility(View.VISIBLE);
+    }
+
+    private void displayThumbnailImage(String thumbnailURL) {
+        if (thumbnailURL != null && !thumbnailURL.equals("")) {
+            mThumbnailImageView.setVisibility(View.VISIBLE);
+            Picasso.with(getContext())
+                    .load(thumbnailURL)
+                    .into(mThumbnailImageView);
+        } else {
+            mThumbnailImageView.setVisibility(View.GONE);
+        }
     }
 
     /**

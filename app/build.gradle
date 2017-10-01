@@ -39,7 +39,7 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.0'
     compile 'com.google.android.exoplayer:exoplayer:r2.2.0'
     testCompile 'junit:junit:4.12'
-
+    compile 'com.squareup.picasso:picasso:2.5.2'
 
     // Espresso RecyclerView matcher class
     androidTestCompile('com.android.support.test.espresso:espresso-contrib:2.2') {
