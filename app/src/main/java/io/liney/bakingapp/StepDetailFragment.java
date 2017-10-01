@@ -30,6 +30,7 @@ import butterknife.ButterKnife;
 
 public class StepDetailFragment extends Fragment {
 
+    private static final String EXOPLAYER_CURRENT_POSITION = "EXOPLAYER_CURRENT_POSITION";
     private SimpleExoPlayer mExoPlayer;
 
     @BindView(R.id.player_view)
@@ -44,6 +45,7 @@ public class StepDetailFragment extends Fragment {
     StepPojo mSteps;
     private String mVideoURL;
     private final String KEY_STEPS = "key-steps";
+    private long mExoPlayerCurrentTime;
 
     @Nullable
     @Override
@@ -63,17 +65,22 @@ public class StepDetailFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        mExoPlayerCurrentTime = 0;
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(KEY_STEPS)) {
                 mSteps = savedInstanceState.getParcelable(KEY_STEPS);
             }
+            if (savedInstanceState.containsKey(EXOPLAYER_CURRENT_POSITION)) {
+                mExoPlayerCurrentTime = savedInstanceState.getLong(EXOPLAYER_CURRENT_POSITION);
+            }
         }
         mVideoURL = mSteps.getVideoURL();
-        showInformation();
+        showInformation(mExoPlayerCurrentTime);
     }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putLong(EXOPLAYER_CURRENT_POSITION, mExoPlayerCurrentTime);
         savedInstanceState.putParcelable(KEY_STEPS, mSteps);
         super.onSaveInstanceState(savedInstanceState);
     }
@@ -86,6 +93,10 @@ public class StepDetailFragment extends Fragment {
 
     @Override
     public void onPause() {
+        if (mExoPlayer != null) {
+            mExoPlayerCurrentTime = mExoPlayer.getCurrentPosition();
+        }
+
         super.onPause();
         releasePlayer();
     }
@@ -95,9 +106,9 @@ public class StepDetailFragment extends Fragment {
         super.onResume();
     }
 
-    private void showInformation() {
+    private void showInformation(long currentPosition) {
         if (mVideoURL != null && !mVideoURL.equals("")) {
-            initializePlayer(Uri.parse(mVideoURL));
+            initializePlayer(Uri.parse(mVideoURL), currentPosition);
         } else {
             mPlayerView.setVisibility(View.GONE);
         }
@@ -121,11 +132,12 @@ public class StepDetailFragment extends Fragment {
      * Initialize ExoPlayer.
      * @param mediaUri The URI of the sample to play.
      */
-    private void initializePlayer(Uri mediaUri) {
+    private void initializePlayer(Uri mediaUri, long currentPosition) {
         if (mExoPlayer == null) {
             TrackSelector trackSelector = new DefaultTrackSelector();
             LoadControl loadControl = new DefaultLoadControl();
             mExoPlayer = ExoPlayerFactory.newSimpleInstance(getActivity(), trackSelector, loadControl);
+            mExoPlayer.seekTo(currentPosition);
             mPlayerView.setPlayer(mExoPlayer);
             mPlayerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH);
 
