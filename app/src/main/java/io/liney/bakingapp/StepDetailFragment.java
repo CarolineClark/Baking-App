@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.LoadControl;
@@ -23,7 +24,6 @@ import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
-import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -109,7 +109,7 @@ public class StepDetailFragment extends Fragment {
     private void displayThumbnailImage(String thumbnailURL) {
         if (thumbnailURL != null && !thumbnailURL.equals("")) {
             mThumbnailImageView.setVisibility(View.VISIBLE);
-            Picasso.with(getContext())
+            Glide.with(getContext())
                     .load(thumbnailURL)
                     .into(mThumbnailImageView);
         } else {
