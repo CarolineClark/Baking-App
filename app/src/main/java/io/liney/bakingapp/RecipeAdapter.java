@@ -6,7 +6,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -40,6 +43,12 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeAdap
     @Override
     public void onBindViewHolder(RecipeAdapterViewHolder holder, int position) {
         holder.mRecipeTextView.setText(mRecipeData.get(position).getName());
+        String imageUrl = mRecipeData.get(position).getImage();
+        if (imageUrl != null && !imageUrl.equals("")) {
+            Glide.with(mContext)
+                    .load(imageUrl)
+                    .into(holder.mImageView);
+        }
     }
 
     @Override
@@ -52,6 +61,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeAdap
 
     class RecipeAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.recipe_name) TextView mRecipeTextView;
+        @BindView(R.id.recipe_thumbnail) ImageView mImageView;
 
         RecipeAdapterViewHolder(View itemView) {
             super(itemView);

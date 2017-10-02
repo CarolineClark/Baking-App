@@ -110,7 +110,7 @@ public class StepDetailFragment extends Fragment {
     public void onResume() {
         super.onResume();
         if (mExoPlayer == null) {
-            initVideoPlayer(0);
+            initVideoPlayer(mExoPlayerCurrentTime);
         }
     }
 
