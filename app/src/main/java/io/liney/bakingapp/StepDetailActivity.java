@@ -51,7 +51,7 @@ public class StepDetailActivity extends AppCompatActivity {
             mStepDetailFragment.setSteps(step);
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
-                    .add(R.id.step_detail_fragment_wrapper, mStepDetailFragment)
+                    .add(R.id.step_detail_fragment_wrapper, mStepDetailFragment, StepDetailFragment.TAG)
                     .commit();
         }
 
@@ -87,7 +87,7 @@ public class StepDetailActivity extends AppCompatActivity {
         mStepDetailFragment.setSteps(mRecipe.getSteps().get(stepNumber));
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.step_detail_fragment_wrapper, mStepDetailFragment)
+                .replace(R.id.step_detail_fragment_wrapper, mStepDetailFragment, StepDetailFragment.TAG)
                 .commit();
         enableDisableButtons();
     }

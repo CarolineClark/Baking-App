@@ -34,7 +34,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepAdapt
                 createStepDetailFragmentWithData(step);
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 fragmentManager.beginTransaction()
-                        .add(R.id.step_detail_container, mStepDetailFragment)
+                        .add(R.id.step_detail_container, mStepDetailFragment, StepDetailFragment.TAG)
                         .commit();
             }
         }
@@ -70,7 +70,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements StepAdapt
     private void replaceStepFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.step_detail_container, mStepDetailFragment)
+                .replace(R.id.step_detail_container, mStepDetailFragment, StepDetailFragment.TAG)
                 .commit();
     }
 

@@ -2,7 +2,10 @@ package io.liney.bakingapp;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
+import android.support.test.espresso.IdlingResource;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +34,8 @@ import butterknife.ButterKnife;
 public class StepDetailFragment extends Fragment {
 
     private static final String EXOPLAYER_CURRENT_POSITION = "EXOPLAYER_CURRENT_POSITION";
+    public static final String TAG = "StepDetailFragment";
+
     private SimpleExoPlayer mExoPlayer;
 
     @BindView(R.id.player_view)
@@ -110,10 +115,9 @@ public class StepDetailFragment extends Fragment {
     }
 
     private void showInformation(long currentPosition) {
+        descriptionTextView.setText(mSteps.getDescription());
         initVideoPlayer(currentPosition);
         displayThumbnailImage(mSteps.getThumbnailURL());
-        descriptionTextView.setText(mSteps.getDescription());
-        descriptionTextView.setVisibility(View.VISIBLE);
     }
 
     private void initVideoPlayer(long currentPosition) {
